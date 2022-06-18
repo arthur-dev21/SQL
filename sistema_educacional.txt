@@ -1,0 +1,127 @@
+CREATE DATABASE sistema_educacional;
+USE sistema_educacional;
+
+############################################### ENTIDADES #########################################################
+
+CREATE TABLE aluno(
+ id_aluno INT NOT NULL auto_increment,
+ nome_aluno VARCHAR(255)NOT NULL,
+ dataNascimento_aluno int NOT NULL,
+ escola_id INT NOT NULL,
+ PRIMARY KEY(id_aluno)
+);
+
+CREATE TABLE escola(
+ id_escola INT NOT NULL auto_increment,
+ nome_escola VARCHAR(255) NOT NULL,
+ estado_escola VARCHAR(255) NOT NULL,
+ PRIMARY KEY(id_escola)
+);
+
+CREATE TABLE professor (
+  id_professor INT NOT NULL auto_increment,
+  nome_professor VARCHAR(255) NOT NULL,
+  especialidade_professor VARCHAR(255) NOT NULL,
+  PRIMARY KEY(id_professor)
+);
+
+CREATE TABLE turma(
+ id_turma INT NOT NULL auto_increment,
+ descricao_turma VARCHAR(255) NOT NULL,
+ escola_id_turma int NOT NULL,
+ professor_id_turma int NOT NULL,
+ PRIMARY KEY(id_turma)
+);
+------------------------------------------------------RELACIONAMENTO  ------------------------------------
+ALTER TABLE aluno ADD CONSTRAINT fk_escola_aluno
+	FOREIGN KEY(escola_id) REFERENCES escola (id_escola);
+	
+ALTER TABLE turma 
+ADD CONSTRAINT fk_turma_escola
+	FOREIGN KEY(escola_id_turma) REFERENCES escola (id_escola),
+ADD CONSTRAINT fk_turma_professor
+	FOREIGN KEY(professor_id_turma) REFERENCES professor (id_professor);
+	
+	
+--------------------------MASSA DE DADOS ------------------------------------------
+INSERT INTO escola (nome_escola , estado_escola) VALUES ("EMLBM","PE");
+INSERT INTO escola (nome_escola , estado_escola) VALUES ("IFPE","AL");
+INSERT INTO escola (nome_escola , estado_escola) VALUES ("ESCOLA ESTADUAL","PE");
+
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Arthur Kenned",1992,1);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Edmund Burk",2000,1);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Jaoao Cabral",1998,1);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Marcelo Lima",1996,1);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Julio Alverenga",1985,1);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Bob Brown",1990,1);
+
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Laura Martinez",2005,3);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Iza maria",2010,2);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("Valdenia Silva",2004,3);
+INSERT INTO aluno (nome_aluno ,dataNascimento_aluno, escola_id) VALUES ("prisicila motta",1992,3);
+
+
+
+INSERT INTO professor (nome_professor , especialidade_professor) VALUES ("Morura Joao","Engenharia de Software");
+INSERT INTO professor (nome_professor , especialidade_professor) VALUES ("Maria Betina","Qualidade de Software");
+
+INSERT INTO turma (descricao_turma , escola_id_turma, professor_id_turma) VALUES ("1 PERIODO",1,1);
+INSERT INTO turma (descricao_turma , escola_id_turma, professor_id_turma) VALUES ("2 PERIODO",1,2);
+INSERT INTO turma (descricao_turma , escola_id_turma, professor_id_turma) VALUES ("3 PERIODO",1,1);
+	
+
+---------------------------update ---------------------------------------------------
+
+UPDATE aluno SET nome_aluno = 'Arthur Lima' WHERE id_aluno = 2;
+UPDATE aluno SET dataNascimento_aluno = 2000 WHERE id_aluno = 4;
+UPDATE aluno SET dataNascimento_aluno = 1998 WHERE id_aluno = 5;
+UPDATE aluno SET dataNascimento_aluno = 1996 WHERE id_aluno = 6;
+UPDATE aluno SET dataNascimento_aluno = 1985 WHERE id_aluno = 7;
+
+
+--------------------------delete -------------------------------------
+
+DELETE FROM aluno WHERE id_aluno = 2;
+
+-----------------------------select ---------------------------------------
+
+SELECT * FROM aluno;
+SELECT nome_escola  FROM escola;
+SELECT especialidade_professor  FROM professor;
+SELECT especialidade_professor  FROM professor;
+SELECT * FROM aluno WHERE dataNascimento_aluno >=2000;
+SELECT * FROM aluno WHERE dataNascimento_aluno <> 2000; //todos os alunos diferentess de 2000
+
+---LIKE - utilizamos para consultar uma pedaço de string
+SELECT *  FROM professor WHERE especialidade_professor LIKE "Qua%"; 
+
+--Cláusulas in e not in
+--AQUI TEREMOS MAIS DE UMA OPÇAO
+SELECT * FROM aluno WHERE id_aluno IN (4,5,6);
+
+-- jOINS CONSULTANDO DADOS EM MAIS DE UMA TABELA
+
+SELECT DISTINCT nome_aluno FROM aluno , escola WHERE aluno.dataNascimento_aluno >=2000 ;
+SELECT * FROM aluno , escola WHERE aluno.dataNascimento_aluno >=2000 ;
+SELECT * FROM aluno , escola WHERE aluno.escola_id = escola.id_escola 
+		AND  escola.id_escola=1  and aluno.id_aluno =3 ;
+		
+SELECT DISTINCT nome_aluno,dataNascimento_aluno,nome_escola,professor_id_turma 
+	FROM aluno,turma,escola 
+	WHERE 		
+	aluno.escola_id = escola.id_escola 
+	AND turma.escola_id_turma = escola.id_escola
+    AND aluno.id_aluno =3;
+
+
+
+
+
+
+---------------------------------alteraçoes das tabelas---------------------
+
+ALTER TABLE aluno ADD COLUMN idade_aluno int NOT NULL;
+ALTER TABLE aluno CHANGE idade_aluno dataNascimento_aluno int NOT NULL;
+
+
+
